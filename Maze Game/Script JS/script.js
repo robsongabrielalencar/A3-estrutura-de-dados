@@ -156,9 +156,16 @@ function checkForVictory() {
 }
 
 
+function toggleArrowButtons(disabled) {
+    const arrows = document.querySelectorAll('.arrow');
+    arrows.forEach(btn => btn.disabled = disabled);
+}
+
 function startAutoSolve() {
     const autoBtn = document.getElementById('startAutoBtn');
-    autoBtn.disabled = true; // Desativa o botão
+    autoBtn.disabled = true; // Desativa o botão automático
+    toggleArrowButtons(true); // Desativa setas
+
     isSolving = true;
     moves = 0;
     playerPosition = { x: 0, y: 0 };
@@ -172,7 +179,7 @@ function startAutoSolve() {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-        async function solve(x, y) {
+    async function solve(x, y) {
         if (!isSolving) return false;
         if (x < 0 || y < 0 || x >= mazeSize || y >= mazeSize) return false;
         if (maze[y][x] !== 0 || visited[y][x]) return false;
@@ -182,7 +189,7 @@ function startAutoSolve() {
         renderMaze();
         await sleep(delay);
 
-        if (!isSolving) return false; // Verificação após sleep
+        if (!isSolving) return false;
 
         if (x === mazeSize - 1 && y === mazeSize - 1) {
             path.push({ x, y });
@@ -197,9 +204,9 @@ function startAutoSolve() {
         ];
 
         for (const { dx, dy } of directions) {
-            if (!isSolving) return false; // Interrompe antes de chamada recursiva
+            if (!isSolving) return false;
             if (await solve(x + dx, y + dy)) {
-                if (!isSolving) return false; // Interrompe retorno de sucesso
+                if (!isSolving) return false;
                 path.push({ x, y });
                 return true;
             }
@@ -209,11 +216,8 @@ function startAutoSolve() {
         renderMaze();
         await sleep(delay);
 
-        if (!isSolving) return false; // Verificação após backtrack
-
         return false;
     }
-
 
     solve(0, 0).then((solved) => {
         if (solved && isSolving) {
@@ -224,18 +228,19 @@ function startAutoSolve() {
             alert(message);
         }
         isSolving = false;
-        autoBtn.disabled = false; // Reativa o botão
+        autoBtn.disabled = false; // Reativa botão automático
+        toggleArrowButtons(false); // Reativa setas
         restartGame();
     });
 }
 
-
-
 function restartGame() {
-    isSolving = false; // Interrompe a execução automática
+    isSolving = false;
 
     const autoBtn = document.getElementById('startAutoBtn');
-    if (autoBtn) autoBtn.disabled = false; // Reativa o botão, se estiver desativado
+    if (autoBtn) autoBtn.disabled = false;
+
+    toggleArrowButtons(false); // Garante setas reativadas
 
     playerPosition = { x: 0, y: 0 };
     moves = 0;
@@ -244,6 +249,7 @@ function restartGame() {
     renderMaze();
     startTime = null;
 }
+
 
 
 generateMaze();

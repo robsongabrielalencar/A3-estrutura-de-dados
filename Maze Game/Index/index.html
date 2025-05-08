@@ -13,12 +13,12 @@
   </div>
   <div class="controls">
     <div class="joystick">
-      <button onclick="movePlayer('up')" class="arrow up">↑</button>
-      <div class="horizontal">
-        <button onclick="movePlayer('left')" class="arrow left">←</button>
-        <button onclick="movePlayer('right')" class="arrow right">→</button>
-      </div>
-      <button onclick="movePlayer('down')" class="arrow down">↓</button>
+      <button id="btn-up" onclick="movePlayer('up')" class="arrow up">↑</button>
+  <div class="horizontal">
+    <button id="btn-left" onclick="movePlayer('left')" class="arrow left">←</button>
+    <button id="btn-right" onclick="movePlayer('right')" class="arrow right">→</button>
+  </div>
+  <button id="btn-down" onclick="movePlayer('down')" class="arrow down">↓</button>
     </div>
     <div class="actions">
       <button id="startAutoBtn" onclick="startAutoSolve()" class="action-button">Iniciar Automático</button>
