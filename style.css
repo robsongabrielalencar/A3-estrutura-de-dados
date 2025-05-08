@@ -1,0 +1,87 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: rgb(73, 218, 169);
+    margin: 0;
+    padding: 20px;
+}
+
+#game-container {
+    margin: 20px auto;
+    width: 600px;
+    height: 600px;
+    border: 2px solid #333;
+    background-color: #fff;
+}
+
+canvas {
+    background-color: #eee;
+    display: block;
+    margin: auto;
+}
+
+.controls {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.joystick {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.joystick .horizontal {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.arrow {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    background-color: #2b0764;
+    color: #fff;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.arrow:hover {
+    background-color: #555555;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.action-button {
+    padding: 12px 20px;
+    font-size: 16px;
+    background-color: #4c0e75;
+    color: white;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.action-button:hover {
+    background-color: #8b3dcc;
+}
+
+#status {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: green;
+}

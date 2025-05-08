@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maze Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Maze Game</h1>
+  <div id="game-container">
+    <canvas id="maze" width="600" height="600"></canvas>
+  </div>
+  <div class="controls">
+    <div class="joystick">
+      <button onclick="movePlayer('up')" class="arrow up">↑</button>
+      <div class="horizontal">
+        <button onclick="movePlayer('left')" class="arrow left">←</button>
+        <button onclick="movePlayer('right')" class="arrow right">→</button>
+      </div>
+      <button onclick="movePlayer('down')" class="arrow down">↓</button>
+    </div>
+    <div class="actions">
+      <button onclick="startAutoSolve()" class="action-button">Iniciar Automático</button>
+      <button onclick="restartGame()" class="action-button">Reiniciar</button>
+    </div>
+  </div>
+  <div id="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>
