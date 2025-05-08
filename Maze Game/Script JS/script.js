@@ -1,4 +1,4 @@
-const mazeSize = 37;
+const mazeSize = 15;
 let maze = [];
 let playerPosition = { x: 0, y: 0 };
 let moves = 0;
@@ -157,7 +157,9 @@ function checkForVictory() {
 
 
 function startAutoSolve() {
-    isSolving = true; // inicia resolução
+    const autoBtn = document.getElementById('startAutoBtn');
+    autoBtn.disabled = true; // Desativa o botão
+    isSolving = true;
     moves = 0;
     playerPosition = { x: 0, y: 0 };
     startTime = Date.now();
@@ -170,8 +172,8 @@ function startAutoSolve() {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async function solve(x, y) {
-        if (!isSolving) return false; // <-- cancela se estiver reiniciando
+        async function solve(x, y) {
+        if (!isSolving) return false;
         if (x < 0 || y < 0 || x >= mazeSize || y >= mazeSize) return false;
         if (maze[y][x] !== 0 || visited[y][x]) return false;
 
@@ -180,7 +182,7 @@ function startAutoSolve() {
         renderMaze();
         await sleep(delay);
 
-        if (!isSolving) return false;
+        if (!isSolving) return false; // Verificação após sleep
 
         if (x === mazeSize - 1 && y === mazeSize - 1) {
             path.push({ x, y });
@@ -195,7 +197,9 @@ function startAutoSolve() {
         ];
 
         for (const { dx, dy } of directions) {
+            if (!isSolving) return false; // Interrompe antes de chamada recursiva
             if (await solve(x + dx, y + dy)) {
+                if (!isSolving) return false; // Interrompe retorno de sucesso
                 path.push({ x, y });
                 return true;
             }
@@ -205,8 +209,11 @@ function startAutoSolve() {
         renderMaze();
         await sleep(delay);
 
+        if (!isSolving) return false; // Verificação após backtrack
+
         return false;
     }
+
 
     solve(0, 0).then((solved) => {
         if (solved && isSolving) {
@@ -216,22 +223,26 @@ function startAutoSolve() {
             document.getElementById('status').innerText = message;
             alert(message);
         }
-        isSolving = false; // encerra o estado de solução
+        isSolving = false;
+        autoBtn.disabled = false; // Reativa o botão
         restartGame();
     });
 }
 
 
 
-
 function restartGame() {
-    isSolving = false; // <-- interrompe qualquer solução automática
+    isSolving = false; // Interrompe a execução automática
+
+    const autoBtn = document.getElementById('startAutoBtn');
+    if (autoBtn) autoBtn.disabled = false; // Reativa o botão, se estiver desativado
+
     playerPosition = { x: 0, y: 0 };
     moves = 0;
     document.getElementById('status').innerText = '';
     generateMaze();
     renderMaze();
-    startTime = Date.now();
+    startTime = null;
 }
 
 
