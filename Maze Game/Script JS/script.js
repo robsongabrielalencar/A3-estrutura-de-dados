@@ -1,4 +1,4 @@
-const mazeSize = 21;
+const mazeSize = 55;
 let maze = [];
 let playerPosition = { x: 0, y: 0 };
 let moves = 0;
