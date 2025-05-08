@@ -225,40 +225,6 @@ function startAutoSolve() {
 }
 
 
-
-function backtrack(x, y) {
-    if (x === mazeSize - 1 && y === mazeSize - 1) {
-        const endTime = Date.now();
-        const elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
-        const message = `Parabéns! O bot completou o labirinto em ${elapsedTime}s com ${moves} movimentos.`;
-        document.getElementById('status').innerText = message;
-        alert(message);
-        clearInterval(gameInterval);
-        return;
-    }
-
-    maze[y][x] = 2;
-
-    const directions = [
-        { dx: 0, dy: -1 },
-        { dx: 1, dy: 0 },
-        { dx: 0, dy: 1 },
-        { dx: -1, dy: 0 }
-    ];
-
-    for (const { dx, dy } of directions) {
-        const newX = x + dx;
-        const newY = y + dy;
-        if (newX >= 0 && newX < mazeSize && newY >= 0 && newY < mazeSize && maze[newY][newX] === 0) {
-            moves++;
-            playerPosition.x = newX;
-            playerPosition.y = newY;
-            renderMaze();
-            break;
-        }
-    }
-}
-
 function restartGame() {
     playerPosition = { x: 0, y: 0 };
     moves = 0;
