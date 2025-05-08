@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: rgb(73, 218, 169);
+    background-color: rgb(175, 157, 199);
     margin: 0;
     padding: 20px;
 }
@@ -23,32 +23,39 @@ canvas {
 .controls {
     margin-top: 20px;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 60px;
+    flex-wrap: wrap;
 }
 
+/* Joystick layout */
 .joystick {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 20px;
+    width: 120px;
+    height: 120px;
+    justify-content: center;
+    position: relative;
 }
 
 .joystick .horizontal {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin: 10px 0;
+    gap: 35px;
+    margin: 6px 0;
 }
 
 .arrow {
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
     font-size: 20px;
     background-color: #2b0764;
     color: #fff;
     border: none;
-    border-radius: 0;
+    border-radius: 5%;
     cursor: pointer;
     transition: background-color 0.3s;
 }
@@ -57,26 +64,42 @@ canvas {
     background-color: #555555;
 }
 
+/* Action buttons layout */
+/* Action buttons layout - agora em coluna */
 .actions {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column; /* Muda para empilhar verticalmente */
+    gap: 20px;
+    align-items: center; /* Centraliza horizontalmente */
 }
 
+
+/* Individual action buttons */
 .action-button {
-    padding: 12px 20px;
+    padding: 10px 24px;
     font-size: 16px;
-    background-color: #4c0e75;
-    color: white;
     border: none;
-    border-radius: 0;
+    border-radius: 20px;
+    font-weight: bold;
+    color: white;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-.action-button:hover {
-    background-color: #8b3dcc;
+.action-button:nth-child(1) {
+    background-color: #1b0ab3; /* Azul claro - Reiniciar */
+}
+
+.action-button:nth-child(1):hover {
+    background-color: #5653a5;
+}
+
+.action-button:nth-child(2) {
+    background-color: #e7810c; /* Roxo - Resolver Auto */
+}
+
+.action-button:nth-child(2):hover {
+    background-color: #f30808;
 }
 
 #status {

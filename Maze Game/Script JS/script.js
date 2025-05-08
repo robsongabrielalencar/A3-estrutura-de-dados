@@ -9,6 +9,8 @@ const canvas = document.getElementById('maze');
 const ctx = canvas.getContext('2d');
 const cellSize = canvas.width / mazeSize;
 
+let isSolving = false; // novo controle para interrupção
+
 
 function generateMaze() {
     // Inicializa todas as células como parede
@@ -155,20 +157,35 @@ function checkForVictory() {
 
 
 function startAutoSolve() {
+    isSolving = true; // inicia resolução
     moves = 0;
     playerPosition = { x: 0, y: 0 };
     startTime = Date.now();
     const visited = Array.from({ length: mazeSize }, () => Array(mazeSize).fill(false));
     const path = [];
 
-    function solve(x, y) {
+    const delay = 200;
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function solve(x, y) {
+        if (!isSolving) return false; // <-- cancela se estiver reiniciando
         if (x < 0 || y < 0 || x >= mazeSize || y >= mazeSize) return false;
         if (maze[y][x] !== 0 || visited[y][x]) return false;
 
         visited[y][x] = true;
-        path.push({ x, y });
+        playerPosition = { x, y };
+        renderMaze();
+        await sleep(delay);
 
-        if (x === mazeSize - 1 && y === mazeSize - 1) return true;
+        if (!isSolving) return false;
+
+        if (x === mazeSize - 1 && y === mazeSize - 1) {
+            path.push({ x, y });
+            return true;
+        }
 
         const directions = [
             { dx: 0, dy: -1 },
@@ -178,35 +195,37 @@ function startAutoSolve() {
         ];
 
         for (const { dx, dy } of directions) {
-            if (solve(x + dx, y + dy)) return true;
+            if (await solve(x + dx, y + dy)) {
+                path.push({ x, y });
+                return true;
+            }
         }
 
-        path.pop(); // Backtrack
+        playerPosition = { x, y };
+        renderMaze();
+        await sleep(delay);
+
         return false;
     }
 
-    solve(0, 0);
-
-    let step = 0;
-    const interval = setInterval(() => {
-        if (step < path.length) {
-            playerPosition = path[step];
-            moves++;
-            renderMaze();
-            step++;
-        } else {
-            clearInterval(interval);
+    solve(0, 0).then((solved) => {
+        if (solved && isSolving) {
+            path.reverse();
             const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
-            const message = `Parabéns! O bot completou o labirinto em ${elapsedTime}s com ${moves} movimentos.`;
+            const message = `Parabéns! O bot completou o labirinto em ${elapsedTime}s com ${path.length} movimentos.`;
             document.getElementById('status').innerText = message;
             alert(message);
-            restartGame();
         }
-    }, 100);
+        isSolving = false; // encerra o estado de solução
+        restartGame();
+    });
 }
 
 
+
+
 function restartGame() {
+    isSolving = false; // <-- interrompe qualquer solução automática
     playerPosition = { x: 0, y: 0 };
     moves = 0;
     document.getElementById('status').innerText = '';
