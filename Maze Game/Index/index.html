@@ -4,13 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Maze Game</title>
-  <link rel="stylesheet" href="/Maze Game/Style/style.css">
+  <link rel="stylesheet" href="../Style/style.css">
 </head>
 <body>
   <h1>Maze Game</h1>
+  
+  <div id="status"></div>
   <div id="game-container">
     <canvas id="maze" width="600" height="600"></canvas>
   </div>
+  <div class="maze-size">
+  <label for="mazeSizeInput">Tamanho do Labirinto:</label>
+<input type="number" id="mazeSizeInput" value="30" min="5" max="100" />
+<button onclick="updateMazeSize()">Aplicar Tamanho</button>
+</div>
+  
+  <div id="info">
+  <p>⏱ Tempo: <span id="timer">0.00</span>s</p>
+  <p>🎯 Movimentos: <span id="move-counter">0</span></p>
+  </div>
+
   <div class="controls">
     <div class="joystick">
       <button id="btn-up" onclick="movePlayer('up')" class="arrow up">↑</button>
@@ -26,6 +39,6 @@
     </div>
   </div>
   <div id="status"></div>
-  <script src="/Maze Game/Script JS/script.js"></script>
+  <script src="../Script JS/script.js"></script>
 </body>
 </html>

@@ -1,110 +1,220 @@
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: rgb(175, 157, 199);
-    margin: 0;
-    padding: 20px;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: rgb(175, 157, 199);
+  padding: 20px;
 }
 
+/* Container do jogo */
 #game-container {
-    margin: 20px auto;
-    width: 600px;
-    height: 600px;
-    border: 2px solid #333;
-    background-color: #fff;
+  margin: 20px auto;
+  width: 600px;
+  height: 600px;
+  border: 2px solid #333;
+  background-color: #fff;
 }
 
+/* Canvas */
 canvas {
-    background-color: #eee;
-    display: block;
-    margin: auto;
+  background-color: #eee;
+  display: block;
+  margin: auto;
 }
 
+/* Informações */
+#info {
+  background-color: #3a3a3a;
+  color: #fff;
+  padding: 15px 25px;
+  border-radius: 8px;
+  font-size: 16px;
+  width: 220px;
+  margin: 20px auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+#info p {
+  margin: 10px 0;
+}
+
+#info p span {
+  font-weight: bold;
+  color: #ffffff;
+}
+
+#timer, #move-counter {
+  font-size: 18px;
+  color: #4CAF50;
+}
+
+/* Controles */
 .controls {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 60px;
-    flex-wrap: wrap;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  flex-wrap: wrap;
 }
 
-/* Joystick layout */
+/* Joystick */
 .joystick {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    width: 120px;
-    height: 120px;
-    justify-content: center;
-    position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 215px;
+  height: 215px;
+  justify-content: center;
 }
 
 .joystick .horizontal {
-    display: flex;
-    justify-content: center;
-    gap: 35px;
-    margin: 6px 0;
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  margin: 6px 0;
 }
 
 .arrow {
-    width: 30px;
-    height: 30px;
-    font-size: 20px;
-    background-color: #2b0764;
-    color: #fff;
-    border: none;
-    border-radius: 5%;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  background-color: #2b0764;
+  color: #fff;
+  border: none;
+  border-radius: 5%;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .arrow:hover {
-    background-color: #555555;
+  background-color: #555555;
 }
 
-/* Action buttons layout */
-/* Action buttons layout - agora em coluna */
+/* Botões de ação */
 .actions {
-    display: flex;
-    flex-direction: column; /* Muda para empilhar verticalmente */
-    gap: 20px;
-    align-items: center; /* Centraliza horizontalmente */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
 }
 
-
-/* Individual action buttons */
 .action-button {
-    padding: 10px 24px;
-    font-size: 16px;
-    border: none;
-    border-radius: 20px;
-    font-weight: bold;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  padding: 10px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .action-button:nth-child(1) {
-    background-color: #1b0ab3; /* Azul claro - Reiniciar */
+  background-color: #1b0ab3;
 }
 
 .action-button:nth-child(1):hover {
-    background-color: #5653a5;
+  background-color: #5653a5;
 }
 
 .action-button:nth-child(2) {
-    background-color: #e7810c; /* Roxo - Resolver Auto */
+  background-color: #e7810c;
 }
 
 .action-button:nth-child(2):hover {
-    background-color: #f30808;
+  background-color: #f30808;
 }
 
+/* Status */
 #status {
-    margin-top: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    color: green;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: green;
 }
+
+/* Responsivo */
+@media screen and (max-width: 768px) {
+  #info {
+    width: 90%;
+    margin: 20px auto;
+  }
+
+  #game-container {
+    width: 90%;
+    height: auto;
+  }
+
+  canvas {
+    width: 100%;
+    height: auto;
+  }
+}
+.maze-size {
+  margin-top: 10px;
+  display: inline-flex; /* Apenas o espaço necessário */
+  justify-content: center;
+  align-items: center;
+  gap: 4px; /* Espaço mínimo entre elementos */
+  background-color: #313131;
+  padding: 6px 10px; /* Menor padding interno */
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Label do input */
+.maze-size label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+/* Campo numérico */
+.maze-size input[type="number"] {
+  width: 55px;
+  padding: 4px 6px;
+  font-size: 13px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  text-align: center;
+  margin: 0;
+}
+
+.maze-size input[type="number"]:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 3px rgba(76, 175, 80, 0.3);
+  outline: none;
+}
+
+/* Botão de aplicar */
+.maze-size button {
+  padding: 5px 12px;
+  font-size: 13px;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.maze-size button:hover {
+  background-color: #45a049;
+}
+
+
+
+
+

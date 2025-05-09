@@ -1,19 +1,19 @@
-const mazeSize = 27;
+let mazeSize = 30;
 let maze = [];
 let playerPosition = { x: 0, y: 0 };
 let moves = 0;
 let startTime;
 let gameInterval;
+let timerInterval = null;
 
 const canvas = document.getElementById('maze');
 const ctx = canvas.getContext('2d');
-const cellSize = canvas.width / mazeSize;
+let cellSize = canvas.width / mazeSize;
 
-let isSolving = false; // novo controle para interrupção
 
+let isSolving = false; // Controle para interrupção
 
 function generateMaze() {
-    // Inicializa todas as células como parede
     maze = Array.from({ length: mazeSize }, () => Array(mazeSize).fill(1));
 
     function shuffle(array) {
@@ -22,6 +22,7 @@ function generateMaze() {
             [array[i], array[j]] = [array[j], array[i]];
         }
         return array;
+        
     }
 
     function carve(x, y) {
@@ -45,16 +46,13 @@ function generateMaze() {
         }
     }
 
-    // Começa da célula (1,1) para deixar a borda intacta
     carve(1, 1);
 
-    // Garante entrada acessível
     maze[0][0] = 0;
     if (maze[0][1] === 1 && maze[1][0] === 1) {
-        maze[0][1] = 0; // abre um dos lados
+        maze[0][1] = 0;
     }
 
-    // Garante saída acessível
     maze[mazeSize - 1][mazeSize - 1] = 0;
     const adjacents = [
         [mazeSize - 2, mazeSize - 1],
@@ -65,28 +63,23 @@ function generateMaze() {
     }
 }
 
-
-
 function renderMaze() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < mazeSize; i++) {
         for (let j = 0; j < mazeSize; j++) {
-            // Preencher célula com cor apropriada
             if (maze[i][j] === 1) {
-                ctx.fillStyle = 'black'; // Parede
+                ctx.fillStyle = 'black';
             } else {
-                ctx.fillStyle = 'white'; // Caminho
+                ctx.fillStyle = 'white';
             }
             ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize);
         }
     }
 
-    // Linha de chegada em vermelho
     ctx.fillStyle = 'red';
     ctx.fillRect((mazeSize - 1) * cellSize, (mazeSize - 1) * cellSize, cellSize, cellSize);
 
-    // Jogador como um círculo azul escuro
     ctx.fillStyle = 'darkblue';
     ctx.beginPath();
     ctx.arc(
@@ -98,17 +91,14 @@ function renderMaze() {
     );
     ctx.fill();
 
-    // Grade do labirinto
     ctx.strokeStyle = '#222';
     ctx.lineWidth = 1;
     for (let i = 0; i <= mazeSize; i++) {
-        // Linhas horizontais
         ctx.beginPath();
         ctx.moveTo(0, i * cellSize);
         ctx.lineTo(canvas.width, i * cellSize);
         ctx.stroke();
 
-        // Linhas verticais
         ctx.beginPath();
         ctx.moveTo(i * cellSize, 0);
         ctx.lineTo(i * cellSize, canvas.height);
@@ -116,10 +106,11 @@ function renderMaze() {
     }
 }
 
-
-
 function movePlayer(direction) {
-    if (!startTime) startTime = Date.now(); // <-- Evita NaN na primeira jogada
+    if (!startTime) {
+        startTime = Date.now();
+        startTimer();
+    }
 
     let dx = 0;
     let dy = 0;
@@ -138,6 +129,7 @@ function movePlayer(direction) {
         playerPosition.x = newX;
         playerPosition.y = newY;
         moves++;
+        updateMoveCounter();
         renderMaze();
         checkForVictory();
     }
@@ -145,16 +137,27 @@ function movePlayer(direction) {
 
 function checkForVictory() {
     if (playerPosition.x === mazeSize - 1 && playerPosition.y === mazeSize - 1) {
+        stopTimer();
         const endTime = Date.now();
         const elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
-
         alert(`Parabéns! Você completou o labirinto em ${elapsedTime}s com ${moves} movimentos.`);
-
-        // Reinicia o jogo automaticamente
         restartGame();
     }
 }
+function updateMazeSize() {
+    const input = document.getElementById('mazeSizeInput');
+    const newSize = parseInt(input.value, 10);
 
+    if (isNaN(newSize) || newSize < 5 || newSize > 100) {
+        alert("Por favor, insira um valor entre 5 e 100.");
+        return;
+    }
+
+    mazeSize = newSize;
+    playerPosition = { x: 0, y: 0 };
+    cellSize = canvas.width / mazeSize; // Recalcula a célula
+    restartGame(); // Gera novo labirinto com novo tamanho
+}
 
 function toggleArrowButtons(disabled) {
     const arrows = document.querySelectorAll('.arrow');
@@ -163,38 +166,35 @@ function toggleArrowButtons(disabled) {
 
 function startAutoSolve() {
     const autoBtn = document.getElementById('startAutoBtn');
-    autoBtn.disabled = true; // Desativa o botão automático
-    toggleArrowButtons(true); // Desativa setas
+    autoBtn.disabled = true;
+    toggleArrowButtons(true);
 
     isSolving = true;
     moves = 0;
-    playerPosition = { x: 0, y: 0 };
+    updateMoveCounter();
     startTime = Date.now();
+    startTimer();
+    playerPosition = { x: 0, y: 0 };
+
     const visited = Array.from({ length: mazeSize }, () => Array(mazeSize).fill(false));
     const path = [];
 
-    const delay = 200;
-
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    async function solve(x, y) {
+    function solve(x, y) {
         if (!isSolving) return false;
-        if (x < 0 || y < 0 || x >= mazeSize || y >= mazeSize) return false;
-        if (maze[y][x] !== 0 || visited[y][x]) return false;
+
+        if (
+            x < 0 || x >= mazeSize ||
+            y < 0 || y >= mazeSize ||
+            maze[y][x] === 1 ||
+            visited[y][x]
+        ) {
+            return false;
+        }
 
         visited[y][x] = true;
-        playerPosition = { x, y };
-        renderMaze();
-        await sleep(delay);
+        path.push({ x, y });
 
-        if (!isSolving) return false;
-
-        if (x === mazeSize - 1 && y === mazeSize - 1) {
-            path.push({ x, y });
-            return true;
-        }
+        if (x === mazeSize - 1 && y === mazeSize - 1) return true;
 
         const directions = [
             { dx: 0, dy: -1 },
@@ -204,54 +204,74 @@ function startAutoSolve() {
         ];
 
         for (const { dx, dy } of directions) {
-            if (!isSolving) return false;
-            if (await solve(x + dx, y + dy)) {
-                if (!isSolving) return false;
-                path.push({ x, y });
+            if (solve(x + dx, y + dy)) {
                 return true;
             }
         }
 
-        playerPosition = { x, y };
-        renderMaze();
-        await sleep(delay);
-
+        // backtracking
+        path.push({ x, y });  // inclui a célula de volta
         return false;
     }
 
-    solve(0, 0).then((solved) => {
-        if (solved && isSolving) {
-            path.reverse();
+    solve(0, 0);
+
+    let step = 0;
+    const delay = 150;
+
+  const interval = setInterval(() => {
+    if (!isSolving || step >= path.length) {
+        clearInterval(interval);
+        stopTimer();
+
+        if (isSolving && step >= path.length) {
             const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
-            const message = `Parabéns! O bot completou o labirinto em ${elapsedTime}s com ${path.length} movimentos.`;
+            const message = `Parabéns! O bot completou o labirinto em ${elapsedTime}s com ${moves} movimentos.`;
             document.getElementById('status').innerText = message;
             alert(message);
         }
+
         isSolving = false;
-        autoBtn.disabled = false; // Reativa botão automático
-        toggleArrowButtons(false); // Reativa setas
+        autoBtn.disabled = false;
+        toggleArrowButtons(false);
         restartGame();
-    });
+        return;
+    }
+
+        const pos = path[step];
+        playerPosition = { x: pos.x, y: pos.y };
+        moves++;
+        updateMoveCounter();
+        renderMaze();
+        step++;
+    }, delay);
 }
+
 
 function restartGame() {
     isSolving = false;
+    stopTimer();
 
     const autoBtn = document.getElementById('startAutoBtn');
     if (autoBtn) autoBtn.disabled = false;
 
-    toggleArrowButtons(false); // Reativa botões
+    toggleArrowButtons(false);
 
     playerPosition = { x: 0, y: 0 };
     moves = 0;
+    startTime = null;
+
     document.getElementById('status').innerText = '';
+    document.getElementById('move-counter').textContent = '0';
+    document.getElementById('timer').textContent = '0.00';
+
     generateMaze();
     renderMaze();
-    startTime = null;
 }
 
+
 document.addEventListener('keydown', function (e) {
-    if (isSolving) return; // Não move manualmente se estiver resolvendo automático
+    if (isSolving) return;
 
     switch (e.key) {
         case 'ArrowUp':
@@ -277,6 +297,23 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
+function updateMoveCounter() {
+    const moveEl = document.getElementById('move-counter');
+    if (moveEl) moveEl.textContent = moves;
+}
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+        const timerEl = document.getElementById('timer');
+        if (timerEl) timerEl.textContent = elapsed;
+    }, 100);
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+}
 
 
 generateMaze();
