@@ -240,7 +240,7 @@ function restartGame() {
     const autoBtn = document.getElementById('startAutoBtn');
     if (autoBtn) autoBtn.disabled = false;
 
-    toggleArrowButtons(false); // Garante setas reativadas
+    toggleArrowButtons(false); // Reativa botões
 
     playerPosition = { x: 0, y: 0 };
     moves = 0;
@@ -250,7 +250,35 @@ function restartGame() {
     startTime = null;
 }
 
+document.addEventListener('keydown', function (e) {
+    if (isSolving) return; // Não move manualmente se estiver resolvendo automático
+
+    switch (e.key) {
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+            movePlayer('up');
+            break;
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+            movePlayer('down');
+            break;
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+            movePlayer('left');
+            break;
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+            movePlayer('right');
+            break;
+    }
+});
+
 
 
 generateMaze();
 renderMaze();
+''
