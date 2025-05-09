@@ -281,4 +281,3 @@ document.addEventListener('keydown', function (e) {
 
 generateMaze();
 renderMaze();
-''
