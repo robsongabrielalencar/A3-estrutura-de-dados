@@ -25,9 +25,9 @@ h1 {
 
 /* Container do jogo */
 #game-container {
-  margin: 20px auto;
-  width: 600px;
-  height: 600px;
+  margin: 10px auto;
+  width: 480px;
+  height: 480px;
   border: 4px solid #ff00cc;
   background-color: #111;
   box-shadow: 0 0 15px #ff00cc;
@@ -45,14 +45,14 @@ canvas {
 #info {
   background-color: #1a0033;
   color: #00ffea;
-  padding: 20px;
+  padding: 0px;
   border: 2px solid #00ffea;
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 10px;
   width: 260px;
-  margin: 20px auto;
+  margin: 0px auto;
   box-shadow: 0 0 10px #00ffea;
-  text-align: left;
+  text-align: center;
 }
 
 #info p {
@@ -174,7 +174,6 @@ canvas {
   color: #fff;
   text-align: center;
   font-family: 'Press Start 2P', cursive;
-
 }
 
 .maze-size input[type="number"]:focus {
@@ -215,12 +214,46 @@ canvas {
     width: 100%;
     height: auto;
   }
+
+  .controls {
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .joystick,
+  .actions {
+    flex: 1 1 0;
+    max-width: 50%;
+    padding: 10px;
+  }
+
+  .joystick {
+    width: auto;
+    height: auto;
+  }
+
+  .actions {
+    gap: 10px;
+  }
+
+  .action-button {
+    padding: 8px 12px;
+    font-size: 10px;
+  }
+
+  .arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
 }
-  /* Remove as setas do input number no Chrome, Safari, Edge */
+
+/* Remove as setas do input number no Chrome, Safari, Edge */
 .maze-size input[type="number"]::-webkit-inner-spin-button,
 .maze-size input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-
