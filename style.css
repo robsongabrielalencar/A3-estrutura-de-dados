@@ -257,3 +257,85 @@ canvas {
   -webkit-appearance: none;
   margin: 0;
 }
+
+@media screen and (max-width: 900px) and (orientation: landscape) {
+  html, body {
+    height: 100vh;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+  }
+
+  body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  #game-container {
+    width: 50%;
+    height: auto;
+    max-height: 90vh;
+  }
+
+  canvas {
+    width: 100%;
+    height: auto;
+    max-height: 90vh;
+  }
+
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 48%;
+  }
+
+  h1 {
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+
+  #info {
+    width: 100%;
+    font-size: 9px;
+    padding: 4px;
+    margin-bottom: 4px;
+  }
+
+  .maze-size {
+    flex-direction: column;
+    width: 100%;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+
+  .controls {
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    gap: 10px;
+  }
+
+  .joystick, .actions {
+    width: 100%;
+    padding: 5px;
+  }
+
+  .arrow {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+
+  .action-button {
+    font-size: 10px;
+    padding: 6px 12px;
+  }
+}
+

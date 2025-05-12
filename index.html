@@ -8,7 +8,11 @@
 </head>
   
 <body>
-  <h1>Maze Game Unifacs</h1>
+
+  <div class="right-panel">
+
+
+<h1>Maze Game Unifacs</h1>
 
 
   <div id="info">
@@ -23,16 +27,11 @@
 <button onclick="updateMazeSize()">Aplicar Tamanho</button>
 </div>
 
-
-  
   <div id="status"></div>
   <div id="game-container">
     <canvas id="maze" width="480" height="480"></canvas>
   </div>
   
-  
-  
-
   <div class="controls">
     <div class="joystick">
       <button id="btn-up" onclick="movePlayer('up')" class="arrow up">↑</button>
@@ -48,7 +47,8 @@
     </div>
   </div>
 
-  
+  </div>
+
   <div id="status"></div>
   <script src="script.js"></script>
 </body>
