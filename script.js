@@ -11,7 +11,7 @@ const ctx = canvas.getContext('2d');
 let cellSize = canvas.width / mazeSize;
 
 
-let isSolving = false; // Controle para interrupção
+let isSolving = false; // controle para interrupcão
 
 function generateMaze() {
     maze = Array.from({ length: mazeSize }, () => Array(mazeSize).fill(1));
@@ -58,10 +58,9 @@ function generateMaze() {
         [mazeSize - 2, mazeSize - 1],
         [mazeSize - 1, mazeSize - 2]
     ];
-    if (maze[mazeSize - 1][mazeSize - 2] === 1 && maze[mazeSize - 2][mazeSize - 1] === 1) {
-    maze[mazeSize - 1][mazeSize - 2] = 0;
-}
-
+    if (adjacents.every(([y, x]) => maze[y][x] === 1)) {
+        maze[mazeSize - 1][mazeSize - 2] = 0;
+    }
 }
 
 function renderMaze() {
@@ -70,18 +69,31 @@ function renderMaze() {
     for (let i = 0; i < mazeSize; i++) {
         for (let j = 0; j < mazeSize; j++) {
             if (maze[i][j] === 1) {
-                ctx.fillStyle = 'black';
+                ctx.fillStyle = '#00ffff'; // Neon para paredes
+                ctx.shadowColor = '#00ffff';
+                ctx.shadowBlur = 10;
             } else {
-                ctx.fillStyle = 'white';
+                ctx.fillStyle = '#000000'; // Caminho preto
+                ctx.shadowBlur = 0;
             }
+            ctx.strokeStyle = '#444';
+            ctx.shadowColor = '#00ffff';
+            ctx.shadowBlur = 5;
+
             ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize);
         }
     }
 
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = '#ffff00'; // Neon amarelo para a linha de chegada!
+    ctx.shadowColor = '#ffff00';
+    ctx.shadowBlur = 15;
+
     ctx.fillRect((mazeSize - 1) * cellSize, (mazeSize - 1) * cellSize, cellSize, cellSize);
 
-    ctx.fillStyle = 'darkblue';
+    ctx.fillStyle = '#ff00ff'; // Rosa neon
+    ctx.shadowColor = '#ff00ff';
+    ctx.shadowBlur = 15;
+
     ctx.beginPath();
     ctx.arc(
         playerPosition.x * cellSize + cellSize / 2,
@@ -138,16 +150,13 @@ function movePlayer(direction) {
 
 function checkForVictory() {
     if (playerPosition.x === mazeSize - 1 && playerPosition.y === mazeSize - 1) {
-        setTimeout(() => {
-            stopTimer();
-            const endTime = Date.now();
-            const elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
-            alert(`Parabéns! Você completou o labirinto em ${elapsedTime}s com ${moves} movimentos.`);
-            restartGame();
-        }, 100); // Pequeno atraso para permitir renderização final
+        stopTimer();
+        const endTime = Date.now();
+        const elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
+        alert(`Parabéns! Você completou o labirinto em ${elapsedTime}s com ${moves} movimentos.`);
+        restartGame();
     }
 }
-
 function updateMazeSize() {
     const input = document.getElementById('mazeSizeInput');
     const newSize = parseInt(input.value, 10);
@@ -159,8 +168,8 @@ function updateMazeSize() {
 
     mazeSize = newSize;
     playerPosition = { x: 0, y: 0 };
-    cellSize = canvas.width / mazeSize; // Recalcula a célula
-    restartGame(); // Gera novo labirinto com novo tamanho
+    cellSize = canvas.width / mazeSize; // Recalcula a célula!
+    restartGame(); // gera novo labirinto com novo tamanho
 }
 
 function toggleArrowButtons(disabled) {
