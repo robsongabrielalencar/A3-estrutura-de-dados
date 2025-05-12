@@ -59,8 +59,9 @@ function generateMaze() {
         [mazeSize - 1, mazeSize - 2]
     ];
     if (adjacents.every(([y, x]) => maze[y][x] === 1)) {
-        maze[mazeSize - 1][mazeSize - 2] = 0;
-    }
+    maze[mazeSize - 1][mazeSize - 2] = 0;
+}
+
 }
 
 function renderMaze() {
@@ -150,13 +151,16 @@ function movePlayer(direction) {
 
 function checkForVictory() {
     if (playerPosition.x === mazeSize - 1 && playerPosition.y === mazeSize - 1) {
-        stopTimer();
-        const endTime = Date.now();
-        const elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
-        alert(`Parabéns! Você completou o labirinto em ${elapsedTime}s com ${moves} movimentos.`);
-        restartGame();
+        setTimeout(() => {
+            stopTimer();
+            const endTime = Date.now();
+            const elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
+            alert(`Parabéns! Você completou o labirinto em ${elapsedTime}s com ${moves} movimentos.`);
+            restartGame();
+        }, 100); // Pequeno atraso para permitir renderização final
     }
 }
+
 function updateMazeSize() {
     const input = document.getElementById('mazeSizeInput');
     const newSize = parseInt(input.value, 10);
