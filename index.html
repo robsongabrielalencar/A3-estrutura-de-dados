@@ -9,22 +9,29 @@
   
 <body>
   <h1>Maze Game Unifacs</h1>
-  
-  <div id="status"></div>
-  <div id="game-container">
-    <canvas id="maze" width="600" height="600"></canvas>
+
+
+  <div id="info">
+  <p>⏱ Tempo: <span id="timer">0.00</span>s</p>
+  <p>🎯 Movimentos: <span id="move-counter">0</span></p>
   </div>
+
   <div class="maze-size">
   <label for="mazeSizeInput">Tamanho do Labirinto:</label>
 
 <input type="number" id="mazeSizeInput" value="30" min="5" max="100" />
 <button onclick="updateMazeSize()">Aplicar Tamanho</button>
 </div>
+
+
   
-  <div id="info">
-  <p>⏱ Tempo: <span id="timer">0.00</span>s</p>
-  <p>🎯 Movimentos: <span id="move-counter">0</span></p>
+  <div id="status"></div>
+  <div id="game-container">
+    <canvas id="maze" width="600" height="600"></canvas>
   </div>
+  
+  
+  
 
   <div class="controls">
     <div class="joystick">
@@ -40,6 +47,8 @@
       <button onclick="restartGame()" class="action-button">Reiniciar</button>
     </div>
   </div>
+
+  
   <div id="status"></div>
   <script src="script.js"></script>
 </body>
