@@ -1,5 +1,3 @@
-// Corrigido: controle de temporizador para evitar valores incorretos
-
 let mazeSize = 30;
 let maze = [];
 let playerPosition = { x: 0, y: 0 };
