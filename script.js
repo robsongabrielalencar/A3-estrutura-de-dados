@@ -199,14 +199,40 @@ function startAutoSolve() {
         step++;
     }, delay);
 }
-function showVictoryMessage(message) {
-    const victoryMessageEl = document.getElementById('victory-message');
-    victoryMessageEl.innerText = message;
-    victoryMessageEl.style.display = 'block'; // mostra a mensagem
 
-    setTimeout(() => {
-        victoryMessageEl.style.display = 'none'; // esconde a mensagem depois de 5 segundos
-    }, 5000); // a mensagem ficará visível por 5 segundos.
+function toggleAllButtons(disabled) {
+  document.querySelectorAll('button').forEach(btn => {
+    btn.disabled = disabled;
+  });
+}
+
+function showVictoryMessage(message) {
+  const messageDiv = document.getElementById('victory-message');
+  const blocker = document.getElementById('interaction-blocker');
+
+  messageDiv.textContent = message;
+  messageDiv.style.display = 'block';
+
+  // Desativa todos os botões
+  toggleAllButtons(true);
+
+  // Mostra o overlay bloqueador
+  blocker.style.display = 'block';
+
+  // Bloqueia teclado
+  function blockKeyboard(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  window.addEventListener('keydown', blockKeyboard, true);
+
+  // Após 5 segundos, remove bloqueios
+  setTimeout(() => {
+    messageDiv.style.display = 'none';
+    toggleAllButtons(false);
+    blocker.style.display = 'none';
+    window.removeEventListener('keydown', blockKeyboard, true);
+  }, 5000);
 }
 
 function restartGame() {

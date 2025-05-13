@@ -340,16 +340,16 @@ canvas {
     margin-top: 6px;
   }
 }
-/* Estilo da mensagem de vitória */
+
 #victory-message {
-    position: fixed; /* Fixa no centro da tela */
+    position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Centraliza exatamente no meio */
+    transform: translate(-50%, -50%);
     font-family: 'Press Start 2P', cursive;
     font-size: 24px; 
-    color: #00ff00; 
-    text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00; /* Efeito de neon */
+    color: #39b639; 
+    text-shadow: 0 0 10px #39b639, 0 0 20px #39b639, 0 0 30px #39b639, 0 0 40px #39b639;
     background-color: rgba(0, 0, 0, 0.7); 
     padding: 20px;
     border-radius: 10px;
@@ -359,7 +359,6 @@ canvas {
     animation: fadeIn 2s ease-out;
   }
   
-  /* Animação para o efeito de sumir lentamente!*/
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -368,4 +367,17 @@ canvas {
       opacity: 1;
     }
   }
+
+  #interaction-blocker {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0); /* invisível */
+  z-index: 9999;
+  display: none;
+  cursor: not-allowed;
+}
+
   
