@@ -127,7 +127,8 @@ function checkForVictory() {
         setTimeout(() => {
             stopTimer();
             const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
-            alert(`Parabéns! Você completou o labirinto em ${elapsedTime}s com ${moves} movimentos.`);
+            const victoryMessage = `Parabéns! Você completou o labirinto em ${elapsedTime}s com ${moves} movimentos!`;
+            showVictoryMessage(victoryMessage);
             restartGame();
         }, 100);
     }
@@ -182,9 +183,8 @@ function startAutoSolve() {
             stopTimer();
             if (isSolving && step >= path.length) {
                 const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
-                const message = `Parabéns! O bot completou o labirinto em ${elapsedTime}s com ${moves} movimentos.`;
-                document.getElementById('status').innerText = message;
-                alert(message);
+                const message = `O bot completou o labirinto em ${elapsedTime}s com ${moves} movimentos!`;
+                showVictoryMessage(message);
             }
             isSolving = false;
             autoBtn.disabled = false;
@@ -198,6 +198,15 @@ function startAutoSolve() {
         renderMaze();
         step++;
     }, delay);
+}
+function showVictoryMessage(message) {
+    const victoryMessageEl = document.getElementById('victory-message');
+    victoryMessageEl.innerText = message;
+    victoryMessageEl.style.display = 'block'; // mostra a mensagem
+
+    setTimeout(() => {
+        victoryMessageEl.style.display = 'none'; // esconde a mensagem depois de 5 segundos
+    }, 5000); // a mensagem ficará visível por 5 segundos.
 }
 
 function restartGame() {

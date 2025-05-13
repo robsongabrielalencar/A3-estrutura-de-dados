@@ -340,3 +340,32 @@ canvas {
     margin-top: 6px;
   }
 }
+/* Estilo da mensagem de vitória */
+#victory-message {
+    position: fixed; /* Fixa no centro da tela */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centraliza exatamente no meio */
+    font-family: 'Press Start 2P', cursive;
+    font-size: 24px; 
+    color: #00ff00; 
+    text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00; /* Efeito de neon */
+    background-color: rgba(0, 0, 0, 0.7); 
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000; 
+    display: none; 
+    text-align: center;
+    animation: fadeIn 2s ease-out;
+  }
+  
+  /* Animação para o efeito de sumir lentamente!*/
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
