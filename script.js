@@ -185,7 +185,7 @@ function startAutoSolve() {
     solve(0, 0);
 
     let step = 0;
-    const delay = 200;
+    const delay = 150;
 
     const interval = setInterval(() => {
         if (!isSolving || step >= fullPath.length) {
