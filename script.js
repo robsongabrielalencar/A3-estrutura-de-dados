@@ -157,50 +157,62 @@ function startAutoSolve() {
     startTime = Date.now();
     startTimer();
     playerPosition = { x: 0, y: 0 };
+
     const visited = Array.from({ length: mazeSize }, () => Array(mazeSize).fill(false));
     const path = [];
+    const fullPath = [];
 
     function solve(x, y) {
         if (!isSolving || x < 0 || x >= mazeSize || y < 0 || y >= mazeSize || maze[y][x] === 1 || visited[y][x]) return false;
+
         visited[y][x] = true;
+        fullPath.push({ x, y }); // Marca tentativa
         path.push({ x, y });
+
         if (x === mazeSize - 1 && y === mazeSize - 1) return true;
+
         const directions = [ { dx: 0, dy: -1 }, { dx: 1, dy: 0 }, { dx: 0, dy: 1 }, { dx: -1, dy: 0 } ];
+
         for (const { dx, dy } of directions) {
             if (solve(x + dx, y + dy)) return true;
         }
+
         path.pop();
+        fullPath.push({ x, y }); // Marca retrocesso visual
         return false;
     }
 
     solve(0, 0);
 
     let step = 0;
-    const delay = 150;
+    const delay = 200;
+
     const interval = setInterval(() => {
-        if (!isSolving || step >= path.length) {
+        if (!isSolving || step >= fullPath.length) {
             clearInterval(interval);
             stopTimer();
 
-            if (isSolving && step >= path.length) {
+            if (isSolving && step >= fullPath.length) {
                 const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
                 const message = `O bot completou o labirinto em ${elapsedTime}s com ${moves} movimentos!`;
-                showVictoryMessage(message); // Essa função cuida do restart após 5s
+                showVictoryMessage(message);
             }
 
             isSolving = false;
             autoBtn.disabled = false;
             toggleArrowButtons(false);
-            return; // Removido restartGame() direto
+            return;
         }
 
-        playerPosition = { x: path[step].x, y: path[step].y };
+        const currentStep = fullPath[step];
+        playerPosition = { x: currentStep.x, y: currentStep.y };
         moves++;
         updateMoveCounter();
         renderMaze();
         step++;
     }, delay);
 }
+
 
 
 function toggleAllButtons(disabled) {
