@@ -124,13 +124,10 @@ function movePlayer(direction) {
 
 function checkForVictory() {
     if (playerPosition.x === mazeSize - 1 && playerPosition.y === mazeSize - 1) {
-        setTimeout(() => {
-            stopTimer();
-            const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
-            const victoryMessage = `Parabéns! Você completou o labirinto em ${elapsedTime}s com ${moves} movimentos!`;
-            showVictoryMessage(victoryMessage);
-            restartGame();
-        }, 100);
+        stopTimer();
+        const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
+        const victoryMessage = `Parabéns! Você completou o labirinto em ${elapsedTime}s com ${moves} movimentos!`;
+        showVictoryMessage(victoryMessage); // NÃO chama restartGame() aqui
     }
 }
 
@@ -162,6 +159,7 @@ function startAutoSolve() {
     playerPosition = { x: 0, y: 0 };
     const visited = Array.from({ length: mazeSize }, () => Array(mazeSize).fill(false));
     const path = [];
+
     function solve(x, y) {
         if (!isSolving || x < 0 || x >= mazeSize || y < 0 || y >= mazeSize || maze[y][x] === 1 || visited[y][x]) return false;
         visited[y][x] = true;
@@ -171,27 +169,31 @@ function startAutoSolve() {
         for (const { dx, dy } of directions) {
             if (solve(x + dx, y + dy)) return true;
         }
-        path.push({ x, y });
+        path.pop();
         return false;
     }
+
     solve(0, 0);
+
     let step = 0;
     const delay = 150;
     const interval = setInterval(() => {
         if (!isSolving || step >= path.length) {
             clearInterval(interval);
             stopTimer();
+
             if (isSolving && step >= path.length) {
                 const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
                 const message = `O bot completou o labirinto em ${elapsedTime}s com ${moves} movimentos!`;
-                showVictoryMessage(message);
+                showVictoryMessage(message); // Essa função cuida do restart após 5s
             }
+
             isSolving = false;
             autoBtn.disabled = false;
             toggleArrowButtons(false);
-            restartGame();
-            return;
+            return; // Removido restartGame() direto
         }
+
         playerPosition = { x: path[step].x, y: path[step].y };
         moves++;
         updateMoveCounter();
@@ -199,6 +201,7 @@ function startAutoSolve() {
         step++;
     }, delay);
 }
+
 
 function toggleAllButtons(disabled) {
   document.querySelectorAll('button').forEach(btn => {
@@ -213,27 +216,27 @@ function showVictoryMessage(message) {
   messageDiv.textContent = message;
   messageDiv.style.display = 'block';
 
-  // Desativa todos os botões
   toggleAllButtons(true);
-
-  // Mostra o overlay bloqueador
   blocker.style.display = 'block';
 
-  // Bloqueia teclado
   function blockKeyboard(e) {
     e.preventDefault();
     e.stopPropagation();
   }
   window.addEventListener('keydown', blockKeyboard, true);
 
-  // Após 5 segundos, remove bloqueios
+  // Mantém a bolinha na linha de chegada por 5 segundos
   setTimeout(() => {
     messageDiv.style.display = 'none';
     toggleAllButtons(false);
     blocker.style.display = 'none';
     window.removeEventListener('keydown', blockKeyboard, true);
+
+    // Só agora reinicia o jogo e move a bolinha de volta
+    restartGame();
   }, 5000);
 }
+
 
 function restartGame() {
     isSolving = false;
