@@ -7,7 +7,7 @@ let timerInterval = null;
 let isSolving = false;
 
 const canvas = document.getElementById('maze');
-const ctx = canvas.getContext('2d');
+const context = canvas.getContext('2d');
 let cellSize = canvas.width / mazeSize;
 
 function generateMaze() {
@@ -51,50 +51,50 @@ function generateMaze() {
 }
 
 function renderMaze() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < mazeSize; i++) {
         for (let j = 0; j < mazeSize; j++) {
             if (maze[i][j] === 1) {
-                ctx.fillStyle = '#00ffff';
-                ctx.shadowColor = '#00ffff';
-                ctx.shadowBlur = 10;
+                context.fillStyle = '#00ffff';
+                context.shadowColor = '#00ffff';
+                context.shadowBlur = 10;
             } else {
-                ctx.fillStyle = '#000000';
-                ctx.shadowBlur = 0;
+                context.fillStyle = '#000000';
+                context.shadowBlur = 0;
             }
-            ctx.strokeStyle = '#444';
-            ctx.shadowColor = '#00ffff';
-            ctx.shadowBlur = 5;
-            ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize);
+            context.strokeStyle = '#444';
+            context.shadowColor = '#00ffff';
+            context.shadowBlur = 5;
+            context.fillRect(j * cellSize, i * cellSize, cellSize, cellSize);
         }
     }
-    ctx.fillStyle = '#ffff00';
-    ctx.shadowColor = '#ffff00';
-    ctx.shadowBlur = 15;
-    ctx.fillRect((mazeSize - 1) * cellSize, (mazeSize - 1) * cellSize, cellSize, cellSize);
-    ctx.fillStyle = '#ff00ff';
-    ctx.shadowColor = '#ff00ff';
-    ctx.shadowBlur = 15;
-    ctx.beginPath();
-    ctx.arc(
+    context.fillStyle = '#ffff00';
+    context.shadowColor = '#ffff00';
+    context.shadowBlur = 15;
+    context.fillRect((mazeSize - 1) * cellSize, (mazeSize - 1) * cellSize, cellSize, cellSize);
+    context.fillStyle = '#ff00ff';
+    context.shadowColor = '#ff00ff';
+    context.shadowBlur = 15;
+    context.beginPath();
+    context.arc(
         playerPosition.x * cellSize + cellSize / 2,
         playerPosition.y * cellSize + cellSize / 2,
         cellSize / 3,
         0,
         Math.PI * 2
     );
-    ctx.fill();
-    ctx.strokeStyle = '#222';
-    ctx.lineWidth = 1;
+    context.fill();
+    context.strokeStyle = '#222';
+    context.lineWidth = 1;
     for (let i = 0; i <= mazeSize; i++) {
-        ctx.beginPath();
-        ctx.moveTo(0, i * cellSize);
-        ctx.lineTo(canvas.width, i * cellSize);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(i * cellSize, 0);
-        ctx.lineTo(i * cellSize, canvas.height);
-        ctx.stroke();
+        context.beginPath();
+        context.moveTo(0, i * cellSize);
+        context.lineTo(canvas.width, i * cellSize);
+        context.stroke();
+        context.beginPath();
+        context.moveTo(i * cellSize, 0);
+        context.lineTo(i * cellSize, canvas.height);
+        context.stroke();
     }
 }
 
