@@ -6,6 +6,8 @@ let startTime = null;
 let timerInterval = null;
 let isSolving = false;
 
+let visitedByBot = [];
+
 const canvas = document.getElementById('maze');
 const context = canvas.getContext('2d');
 let cellSize = canvas.width / mazeSize;
@@ -58,20 +60,28 @@ function renderMaze() {
                 context.fillStyle = '#00ffff';
                 context.shadowColor = '#00ffff';
                 context.shadowBlur = 10;
+            } else if (visitedByBot[i][j] === 'forward') {
+                context.fillStyle = '#ffff00';
+                context.shadowColor = '#ffff00';
+                context.shadowBlur = 5;
+            } else if (visitedByBot[i][j] === 'back') {
+                context.fillStyle = '#ff0000';
+                context.shadowColor = '#ff0000';
+                context.shadowBlur = 5;
             } else {
                 context.fillStyle = '#000000';
                 context.shadowBlur = 0;
             }
             context.strokeStyle = '#444';
-            context.shadowColor = '#00ffff';
-            context.shadowBlur = 5;
             context.fillRect(j * cellSize, i * cellSize, cellSize, cellSize);
         }
     }
+
     context.fillStyle = '#ffff00';
     context.shadowColor = '#ffff00';
     context.shadowBlur = 15;
     context.fillRect((mazeSize - 1) * cellSize, (mazeSize - 1) * cellSize, cellSize, cellSize);
+
     context.fillStyle = '#ff00ff';
     context.shadowColor = '#ff00ff';
     context.shadowBlur = 15;
@@ -84,6 +94,7 @@ function renderMaze() {
         Math.PI * 2
     );
     context.fill();
+
     context.strokeStyle = '#222';
     context.lineWidth = 1;
     for (let i = 0; i <= mazeSize; i++) {
@@ -91,6 +102,7 @@ function renderMaze() {
         context.moveTo(0, i * cellSize);
         context.lineTo(canvas.width, i * cellSize);
         context.stroke();
+
         context.beginPath();
         context.moveTo(i * cellSize, 0);
         context.lineTo(i * cellSize, canvas.height);
@@ -127,7 +139,7 @@ function checkForVictory() {
         stopTimer();
         const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
         const victoryMessage = `Parabéns! Você completou o labirinto em ${elapsedTime}s com ${moves} movimentos!`;
-        showVictoryMessage(victoryMessage); // NÃO chama restartGame() aqui
+        showVictoryMessage(victoryMessage);
     }
 }
 
@@ -159,6 +171,7 @@ function startAutoSolve() {
     playerPosition = { x: 0, y: 0 };
 
     const visited = Array.from({ length: mazeSize }, () => Array(mazeSize).fill(false));
+    visitedByBot = Array.from({ length: mazeSize }, () => Array(mazeSize).fill(null));
     const path = [];
     const fullPath = [];
 
@@ -166,7 +179,7 @@ function startAutoSolve() {
         if (!isSolving || x < 0 || x >= mazeSize || y < 0 || y >= mazeSize || maze[y][x] === 1 || visited[y][x]) return false;
 
         visited[y][x] = true;
-        fullPath.push({ x, y }); // Marca tentativa
+        fullPath.push({ x, y, type: 'forward' });
         path.push({ x, y });
 
         if (x === mazeSize - 1 && y === mazeSize - 1) return true;
@@ -178,7 +191,7 @@ function startAutoSolve() {
         }
 
         path.pop();
-        fullPath.push({ x, y }); // Marca retrocesso visual
+        fullPath.push({ x, y, type: 'back' });
         return false;
     }
 
@@ -206,6 +219,10 @@ function startAutoSolve() {
 
         const currentStep = fullPath[step];
         playerPosition = { x: currentStep.x, y: currentStep.y };
+
+        // Atualiza visualmente no momento
+        visitedByBot[currentStep.y][currentStep.x] = currentStep.type;
+
         moves++;
         updateMoveCounter();
         renderMaze();
@@ -213,42 +230,36 @@ function startAutoSolve() {
     }, delay);
 }
 
-
-
 function toggleAllButtons(disabled) {
-  document.querySelectorAll('button').forEach(btn => {
-    btn.disabled = disabled;
-  });
+    document.querySelectorAll('button').forEach(btn => {
+        btn.disabled = disabled;
+    });
 }
 
 function showVictoryMessage(message) {
-  const messageDiv = document.getElementById('victory-message');
-  const blocker = document.getElementById('interaction-blocker');
+    const messageDiv = document.getElementById('victory-message');
+    const blocker = document.getElementById('interaction-blocker');
 
-  messageDiv.textContent = message;
-  messageDiv.style.display = 'block';
+    messageDiv.textContent = message;
+    messageDiv.style.display = 'block';
 
-  toggleAllButtons(true);
-  blocker.style.display = 'block';
+    toggleAllButtons(true);
+    blocker.style.display = 'block';
 
-  function blockKeyboard(e) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-  window.addEventListener('keydown', blockKeyboard, true);
+    function blockKeyboard(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    window.addEventListener('keydown', blockKeyboard, true);
 
-  // Mantém a bolinha na linha de chegada por 5 segundos
-  setTimeout(() => {
-    messageDiv.style.display = 'none';
-    toggleAllButtons(false);
-    blocker.style.display = 'none';
-    window.removeEventListener('keydown', blockKeyboard, true);
-
-    // Só agora reinicia o jogo e move a bolinha de volta
-    restartGame();
-  }, 5000);
+    setTimeout(() => {
+        messageDiv.style.display = 'none';
+        toggleAllButtons(false);
+        blocker.style.display = 'none';
+        window.removeEventListener('keydown', blockKeyboard, true);
+        restartGame();
+    }, 5000);
 }
-
 
 function restartGame() {
     isSolving = false;
@@ -262,6 +273,7 @@ function restartGame() {
     document.getElementById('status').innerText = '';
     document.getElementById('move-counter').textContent = '0';
     document.getElementById('timer').textContent = '0.00';
+    visitedByBot = Array.from({ length: mazeSize }, () => Array(mazeSize).fill(null));
     generateMaze();
     renderMaze();
 }
@@ -297,5 +309,7 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
-generateMaze();
-renderMaze();
+// Garante que o labirinto seja gerado e renderizado assim que o DOM estiver carregado
+window.addEventListener('DOMContentLoaded', function() {
+    restartGame();
+});
