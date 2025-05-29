@@ -61,13 +61,13 @@ function renderMaze() {
                 context.shadowColor = '#00ffff';
                 context.shadowBlur = 10;
             } else if (visitedByBot[i][j] === 'forward') {
-                context.fillStyle = '#ffff00';
-                context.shadowColor = '#ffff00';
+                context.fillStyle = '#39FF14';
+                context.shadowColor = '#39FF14';
                 context.shadowBlur = 5;
             } else if (visitedByBot[i][j] === 'back') {
-                context.fillStyle = '#ff0000';
-                context.shadowColor = '#ff0000';
-                context.shadowBlur = 5;
+                context.fillStyle = '#FF4500';
+                context.shadowColor = '#FF4500';
+                context.shadowBlur = 10;
             } else {
                 context.fillStyle = '#000000';
                 context.shadowBlur = 0;
