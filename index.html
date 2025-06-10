@@ -3,59 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maze  Game</title>
+  <title>Maze Game</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
-  
-<div id="interaction-blocker"></div>
-
-
 <body>
 
-<h1>Maze Game Unifacs</h1>
-<div id="victory-message"></div>
+  <div id="interaction-blocker"></div>
 
-
+  <h1>Maze Game Unifacs</h1>
+  <div id="victory-message"></div>
 
   <div id="info">
-  <p>⏱ Tempo: <span id="timer">0.00</span>s</p>
-  <p>🎯 Movimentos: <span id="move-counter">0</span></p>
+    <p>⏱ Tempo: <span id="timer">0.00</span>s</p>
+    <p>🎯 Movimentos: <span id="move-counter">0</span></p>
   </div>
 
   <div class="maze-size">
-  <label for="mazeSizeInput">Tamanho do Labirinto:</label>
-
-<input type="number" id="mazeSizeInput" value="30" min="5" max="100" />
-<button onclick="updateMazeSize()">Aplicar Tamanho</button>
-</div>
+    <label for="mazeSizeInput">Tamanho do Labirinto:</label>
+    <input type="number" id="mazeSizeInput" value="30" min="5" max="100" />
+    <button onclick="atualizarTamanhoLabirinto()">Aplicar Tamanho</button>
+  </div>
 
   <div id="main-layout">
-
-<div id="game-container">
-    <canvas id="maze" width="480" height="480"></canvas>
-  </div>
-  
-  <div class="controls">
-    <div class="joystick">
-      <button id="btn-up" onclick="movePlayer('up')" class="arrow up">↑</button>
-  <div class="horizontal">
-    <button id="btn-left" onclick="movePlayer('left')" class="arrow left">←</button>
-    <button id="btn-right" onclick="movePlayer('right')" class="arrow right">→</button>
-  </div>
-  <button id="btn-down" onclick="movePlayer('down')" class="arrow down">↓</button>
+    <div id="game-container">
+      <canvas id="maze" width="480" height="480"></canvas>
     </div>
-    <div class="actions">
-      <button id="startAutoBtn" onclick="startAutoSolve()" class="action-button">Iniciar Automático</button>
-      <button onclick="restartGame()" class="action-button">Reiniciar</button>
+    
+    <div class="controls">
+      <div class="joystick">
+        <button id="btn-up" onclick="moverJogador('up')" class="arrow up">↑</button>
+        <div class="horizontal">
+          <button id="btn-left" onclick="moverJogador('left')" class="arrow left">←</button>
+          <button id="btn-right" onclick="moverJogador('right')" class="arrow right">→</button>
+        </div>
+        <button id="btn-down" onclick="moverJogador('down')" class="arrow down">↓</button>
+      </div>
+      <div class="actions">
+        <button id="startAutoBtn" onclick="iniciarResolucaoAutomatica()" class="action-button">Iniciar Automático</button>
+        <button onclick="reiniciarJogo()" class="action-button">Reiniciar</button>
+      </div>
     </div>
   </div>
-
-
-  </div>
-
-  
-
 
   <div id="status"></div>
   <script src="script.js"></script>

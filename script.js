@@ -1,21 +1,21 @@
-let mazeSize = 30;
-let maze = [];
-let playerPosition = { x: 0, y: 0 };
-let moves = 0;
-let startTime = null;
-let timerInterval = null;
-let isSolving = false;
+let tamanhoLabirinto = 30;
+let labirinto = [];
+let posicaoJogador = { x: 0, y: 0 };
+let movimentos = 0;
+let tempoInicio = null;
+let intervaloTemporizador = null;
+let resolvendo = false;
 
-let visitedByBot = [];
+let visitadoPeloBot = [];
 
 const canvas = document.getElementById('maze');
 const context = canvas.getContext('2d');
-let cellSize = canvas.width / mazeSize;
+let tamanhoCelula = canvas.width / tamanhoLabirinto;
 
-function generateMaze() {
-    maze = Array.from({ length: mazeSize }, () => Array(mazeSize).fill(1));
+function gerarLabirinto() {
+    labirinto = Array.from({ length: tamanhoLabirinto }, () => Array(tamanhoLabirinto).fill(1));
 
-    function shuffle(array) {
+    function randomizarOLabirinto(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
@@ -23,48 +23,48 @@ function generateMaze() {
         return array;
     }
 
-    function carve(x, y) {
-        maze[y][x] = 0;
-        const directions = shuffle([
+    function gerarCaminho (x, y) {
+        labirinto[y][x] = 0;
+        const direcoes = randomizarOLabirinto([
             { dx: 0, dy: -2 },
             { dx: 2, dy: 0 },
             { dx: 0, dy: 2 },
             { dx: -2, dy: 0 }
         ]);
-        for (const { dx, dy } of directions) {
+        for (const { dx, dy } of direcoes) {
             const nx = x + dx;
             const ny = y + dy;
-            if (ny > 0 && ny < mazeSize && nx > 0 && nx < mazeSize && maze[ny][nx] === 1) {
-                maze[y + dy / 2][x + dx / 2] = 0;
-                carve(nx, ny);
+            if (ny > 0 && ny < tamanhoLabirinto && nx > 0 && nx < tamanhoLabirinto && labirinto[ny][nx] === 1) {
+                labirinto[y + dy / 2][x + dx / 2] = 0;
+                gerarCaminho (nx, ny);
             }
         }
     }
 
-    carve(1, 1);
-    maze[0][0] = 0;
-    if (maze[0][1] === 1 && maze[1][0] === 1) maze[0][1] = 0;
-    maze[mazeSize - 1][mazeSize - 1] = 0;
-    const adjacents = [
-        [mazeSize - 2, mazeSize - 1],
-        [mazeSize - 1, mazeSize - 2]
+    gerarCaminho (1, 1);
+    labirinto[0][0] = 0;
+    if (labirinto[0][1] === 1 && labirinto[1][0] === 1) labirinto[0][1] = 0;
+    labirinto[tamanhoLabirinto - 1][tamanhoLabirinto - 1] = 0;
+    const adjacentes = [
+        [tamanhoLabirinto - 2, tamanhoLabirinto - 1],
+        [tamanhoLabirinto - 1, tamanhoLabirinto - 2]
     ];
-    if (adjacents.every(([y, x]) => maze[y][x] === 1)) maze[mazeSize - 1][mazeSize - 2] = 0;
+    if (adjacentes.every(([y, x]) => labirinto[y][x] === 1)) labirinto[tamanhoLabirinto - 1][tamanhoLabirinto - 2] = 0;
 }
 
-function renderMaze() {
+function desenharLabirinto() {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < mazeSize; i++) {
-        for (let j = 0; j < mazeSize; j++) {
-            if (maze[i][j] === 1) {
+    for (let i = 0; i < tamanhoLabirinto; i++) {
+        for (let j = 0; j < tamanhoLabirinto; j++) {
+            if (labirinto[i][j] === 1) {
                 context.fillStyle = '#00ffff';
                 context.shadowColor = '#00ffff';
                 context.shadowBlur = 10;
-            } else if (visitedByBot[i][j] === 'forward') {
+            } else if (visitadoPeloBot[i][j] === 'forward') {
                 context.fillStyle = '#39FF14';
                 context.shadowColor = '#39FF14';
                 context.shadowBlur = 5;
-            } else if (visitedByBot[i][j] === 'back') {
+            } else if (visitadoPeloBot[i][j] === 'back') {
                 context.fillStyle = '#FFEF00';
                 context.shadowColor = '#FFEF00';
                 context.shadowBlur = 10;
@@ -73,23 +73,23 @@ function renderMaze() {
                 context.shadowBlur = 0;
             }
             context.strokeStyle = '#444';
-            context.fillRect(j * cellSize, i * cellSize, cellSize, cellSize);
+            context.fillRect(j * tamanhoCelula, i * tamanhoCelula, tamanhoCelula, tamanhoCelula);
         }
     }
 
     context.fillStyle = '#ffff00';
     context.shadowColor = '#ffff00';
     context.shadowBlur = 15;
-    context.fillRect((mazeSize - 1) * cellSize, (mazeSize - 1) * cellSize, cellSize, cellSize);
+    context.fillRect((tamanhoLabirinto - 1) * tamanhoCelula, (tamanhoLabirinto - 1) * tamanhoCelula, tamanhoCelula, tamanhoCelula);
 
     context.fillStyle = '#ff00ff';
     context.shadowColor = '#ff00ff';
     context.shadowBlur = 15;
     context.beginPath();
     context.arc(
-        playerPosition.x * cellSize + cellSize / 2,
-        playerPosition.y * cellSize + cellSize / 2,
-        cellSize / 3,
+        posicaoJogador.x * tamanhoCelula + tamanhoCelula / 2,
+        posicaoJogador.y * tamanhoCelula + tamanhoCelula / 2,
+        tamanhoCelula / 3,
         0,
         Math.PI * 2
     );
@@ -97,219 +97,217 @@ function renderMaze() {
 
     context.strokeStyle = '#222';
     context.lineWidth = 1;
-    for (let i = 0; i <= mazeSize; i++) {
+    for (let i = 0; i <= tamanhoLabirinto; i++) {
         context.beginPath();
-        context.moveTo(0, i * cellSize);
-        context.lineTo(canvas.width, i * cellSize);
+        context.moveTo(0, i * tamanhoCelula);
+        context.lineTo(canvas.width, i * tamanhoCelula);
         context.stroke();
 
         context.beginPath();
-        context.moveTo(i * cellSize, 0);
-        context.lineTo(i * cellSize, canvas.height);
+        context.moveTo(i * tamanhoCelula, 0);
+        context.lineTo(i * tamanhoCelula, canvas.height);
         context.stroke();
     }
 }
 
-function movePlayer(direction) {
-    if (!startTime) {
-        startTime = Date.now();
-        startTimer();
+function moverJogador(direcao) {
+    if (!tempoInicio) {
+        tempoInicio = Date.now();
+        iniciarTemporizador();
     }
     let dx = 0, dy = 0;
-    switch (direction) {
+    switch (direcao) {
         case 'up': dy = -1; break;
         case 'down': dy = 1; break;
         case 'left': dx = -1; break;
         case 'right': dx = 1; break;
     }
-    const newX = playerPosition.x + dx;
-    const newY = playerPosition.y + dy;
-    if (newX >= 0 && newX < mazeSize && newY >= 0 && newY < mazeSize && maze[newY][newX] === 0) {
-        playerPosition.x = newX;
-        playerPosition.y = newY;
-        moves++;
-        updateMoveCounter();
-        renderMaze();
-        checkForVictory();
+    const novoX = posicaoJogador.x + dx;
+    const novoY = posicaoJogador.y + dy;
+    if (novoX >= 0 && novoX < tamanhoLabirinto && novoY >= 0 && novoY < tamanhoLabirinto && labirinto[novoY][novoX] === 0) {
+        posicaoJogador.x = novoX;
+        posicaoJogador.y = novoY;
+        movimentos++;
+        atualizarContadorMovimentos();
+        desenharLabirinto();
+        verificarVitoria();
     }
 }
 
-function checkForVictory() {
-    if (playerPosition.x === mazeSize - 1 && playerPosition.y === mazeSize - 1) {
-        stopTimer();
-        const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
-        const victoryMessage = `Parabéns! Você completou o labirinto em ${elapsedTime}s com ${moves} movimentos!`;
-        showVictoryMessage(victoryMessage);
+function verificarVitoria() {
+    if (posicaoJogador.x === tamanhoLabirinto - 1 && posicaoJogador.y === tamanhoLabirinto - 1) {
+        pararTemporizador();
+        const tempoDecorrido = ((Date.now() - tempoInicio) / 1000).toFixed(2);
+        const mensagemVitoria = `Parabéns! Você completou o labirinto em ${tempoDecorrido}s com ${movimentos} movimentos!`;
+        mostrarMensagemVitoria(mensagemVitoria);
     }
 }
 
-function updateMazeSize() {
-    const input = document.getElementById('mazeSizeInput');
-    const newSize = parseInt(input.value, 10);
-    if (isNaN(newSize) || newSize < 5 || newSize > 100) {
+function atualizarTamanhoLabirinto() {
+    const entrada = document.getElementById('mazeSizeInput');
+    const novoTamanho = parseInt(entrada.value, 10);
+    if (isNaN(novoTamanho) || novoTamanho < 5 || novoTamanho > 100) {
         alert("Por favor, insira um valor entre 5 e 100.");
         return;
     }
-    mazeSize = newSize;
-    cellSize = canvas.width / mazeSize;
-    restartGame();
+    tamanhoLabirinto = novoTamanho;
+    tamanhoCelula = canvas.width / tamanhoLabirinto;
+    reiniciarJogo();
 }
 
-function toggleArrowButtons(disabled) {
-    document.querySelectorAll('.arrow').forEach(btn => btn.disabled = disabled);
+function alternarBotoesSetas(desabilitar) {
+    document.querySelectorAll('.arrow').forEach(botao => botao.disabled = desabilitar);
 }
 
-function startAutoSolve() {
-    const autoBtn = document.getElementById('startAutoBtn');
-    autoBtn.disabled = true;
-    toggleArrowButtons(true);
-    isSolving = true;
-    moves = 0;
-    updateMoveCounter();
-    startTime = Date.now();
-    startTimer();
-    playerPosition = { x: 0, y: 0 };
+function iniciarResolucaoAutomatica() {
+    const botaoAuto = document.getElementById('startAutoBtn');
+    botaoAuto.disabled = true;
+    alternarBotoesSetas(true);
+    resolvendo = true;
+    movimentos = 0;
+    atualizarContadorMovimentos();
+    tempoInicio = Date.now();
+    iniciarTemporizador();
+    posicaoJogador = { x: 0, y: 0 };
 
-    const visited = Array.from({ length: mazeSize }, () => Array(mazeSize).fill(false));
-    visitedByBot = Array.from({ length: mazeSize }, () => Array(mazeSize).fill(null));
-    const path = [];
-    const fullPath = [];
+    const visitado = Array.from({ length: tamanhoLabirinto }, () => Array(tamanhoLabirinto).fill(false));
+    visitadoPeloBot = Array.from({ length: tamanhoLabirinto }, () => Array(tamanhoLabirinto).fill(null));
+    const caminho = [];
+    const caminhoCompleto = [];
 
-    function solve(x, y) {
-        if (!isSolving || x < 0 || x >= mazeSize || y < 0 || y >= mazeSize || maze[y][x] === 1 || visited[y][x]) return false;
+    function resolver(x, y) {
+        if (!resolvendo || x < 0 || x >= tamanhoLabirinto || y < 0 || y >= tamanhoLabirinto || labirinto[y][x] === 1 || visitado[y][x]) return false;
 
-        visited[y][x] = true;
-        fullPath.push({ x, y, type: 'forward' });
-        path.push({ x, y });
+        visitado[y][x] = true;
+        caminhoCompleto.push({ x, y, type: 'forward' });
+        caminho.push({ x, y });
 
-        if (x === mazeSize - 1 && y === mazeSize - 1) return true;
+        if (x === tamanhoLabirinto - 1 && y === tamanhoLabirinto - 1) return true;
 
-        const directions = [ { dx: 0, dy: -1 }, { dx: 1, dy: 0 }, { dx: 0, dy: 1 }, { dx: -1, dy: 0 } ];
+        const direcoes = [ { dx: 0, dy: -1 }, { dx: 1, dy: 0 }, { dx: 0, dy: 1 }, { dx: -1, dy: 0 } ];
 
-        for (const { dx, dy } of directions) {
-            if (solve(x + dx, y + dy)) return true;
+        for (const { dx, dy } of direcoes) {
+            if (resolver(x + dx, y + dy)) return true;
         }
 
-        path.pop();
-        fullPath.push({ x, y, type: 'back' });
+        caminho.pop();
+        caminhoCompleto.push({ x, y, type: 'back' });
         return false;
     }
 
-    solve(0, 0);
+    resolver(0, 0);
 
-    let step = 0;
-    const delay = 150;
+    let passo = 0;
+    const atraso = 150;
 
-    const interval = setInterval(() => {
-        if (!isSolving || step >= fullPath.length) {
-            clearInterval(interval);
-            stopTimer();
+    const intervalo = setInterval(() => {
+        if (!resolvendo || passo >= caminhoCompleto.length) {
+            clearInterval(intervalo);
+            pararTemporizador();
 
-            if (isSolving && step >= fullPath.length) {
-                const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
-                const message = `O bot completou o labirinto em ${elapsedTime}s com ${moves} movimentos!`;
-                showVictoryMessage(message);
+            if (resolvendo && passo >= caminhoCompleto.length) {
+                const tempoDecorrido = ((Date.now() - tempoInicio) / 1000).toFixed(2);
+                const mensagem = `O bot completou o labirinto em ${tempoDecorrido}s com ${movimentos} movimentos!`;
+                mostrarMensagemVitoria(mensagem);
             }
 
-            isSolving = false;
-            autoBtn.disabled = false;
-            toggleArrowButtons(false);
+            resolvendo = false;
+            botaoAuto.disabled = false;
+            alternarBotoesSetas(false);
             return;
         }
 
-        const currentStep = fullPath[step];
-        playerPosition = { x: currentStep.x, y: currentStep.y };
+        const passoAtual = caminhoCompleto[passo];
+        posicaoJogador = { x: passoAtual.x, y: passoAtual.y };
 
-        // Atualiza visualmente no momento
-        visitedByBot[currentStep.y][currentStep.x] = currentStep.type;
+        visitadoPeloBot[passoAtual.y][passoAtual.x] = passoAtual.type;
 
-        moves++;
-        updateMoveCounter();
-        renderMaze();
-        step++;
-    }, delay);
+        movimentos++;
+        atualizarContadorMovimentos();
+        desenharLabirinto();
+        passo++;
+    }, atraso);
 }
 
-function toggleAllButtons(disabled) {
-    document.querySelectorAll('button').forEach(btn => {
-        btn.disabled = disabled;
+function alternarTodosBotoes(desabilitar) {
+    document.querySelectorAll('button').forEach(botao => {
+        botao.disabled = desabilitar;
     });
 }
 
-function showVictoryMessage(message) {
-    const messageDiv = document.getElementById('victory-message');
-    const blocker = document.getElementById('interaction-blocker');
+function mostrarMensagemVitoria(mensagem) {
+    const divMensagem = document.getElementById('victory-message');
+    const bloqueador = document.getElementById('interaction-blocker');
 
-    messageDiv.textContent = message;
-    messageDiv.style.display = 'block';
+    divMensagem.textContent = mensagem;
+    divMensagem.style.display = 'block';
 
-    toggleAllButtons(true);
-    blocker.style.display = 'block';
+    alternarTodosBotoes(true);
+    bloqueador.style.display = 'block';
 
-    function blockKeyboard(e) {
+    function bloquearTeclado(e) {
         e.preventDefault();
         e.stopPropagation();
     }
-    window.addEventListener('keydown', blockKeyboard, true);
+    window.addEventListener('keydown', bloquearTeclado, true);
 
     setTimeout(() => {
-        messageDiv.style.display = 'none';
-        toggleAllButtons(false);
-        blocker.style.display = 'none';
-        window.removeEventListener('keydown', blockKeyboard, true);
-        restartGame();
+        divMensagem.style.display = 'none';
+        alternarTodosBotoes(false);
+        bloqueador.style.display = 'none';
+        window.removeEventListener('keydown', bloquearTeclado, true);
+        reiniciarJogo();
     }, 5000);
 }
 
-function restartGame() {
-    isSolving = false;
-    stopTimer();
-    startTime = null;
-    const autoBtn = document.getElementById('startAutoBtn');
-    if (autoBtn) autoBtn.disabled = false;
-    toggleArrowButtons(false);
-    playerPosition = { x: 0, y: 0 };
-    moves = 0;
+function reiniciarJogo() {
+    resolvendo = false;
+    pararTemporizador();
+    tempoInicio = null;
+    const botaoAuto = document.getElementById('startAutoBtn');
+    if (botaoAuto) botaoAuto.disabled = false;
+    alternarBotoesSetas(false);
+    posicaoJogador = { x: 0, y: 0 };
+    movimentos = 0;
     document.getElementById('status').innerText = '';
     document.getElementById('move-counter').textContent = '0';
     document.getElementById('timer').textContent = '0.00';
-    visitedByBot = Array.from({ length: mazeSize }, () => Array(mazeSize).fill(null));
-    generateMaze();
-    renderMaze();
+    visitadoPeloBot = Array.from({ length: tamanhoLabirinto }, () => Array(tamanhoLabirinto).fill(null));
+    gerarLabirinto();
+    desenharLabirinto();
 }
 
-function updateMoveCounter() {
-    const moveEl = document.getElementById('move-counter');
-    if (moveEl) moveEl.textContent = moves;
+function atualizarContadorMovimentos() {
+    const elementoMovimentos = document.getElementById('move-counter');
+    if (elementoMovimentos) elementoMovimentos.textContent = movimentos;
 }
 
-function startTimer() {
-    stopTimer();
-    timerInterval = setInterval(() => {
-        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-        const timerEl = document.getElementById('timer');
-        if (timerEl) timerEl.textContent = elapsed;
+function iniciarTemporizador() {
+    pararTemporizador();
+    intervaloTemporizador = setInterval(() => {
+        const decorrido = ((Date.now() - tempoInicio) / 1000).toFixed(2);
+        const elementoTemporizador = document.getElementById('timer');
+        if (elementoTemporizador) elementoTemporizador.textContent = decorrido;
     }, 100);
 }
 
-function stopTimer() {
-    if (timerInterval !== null) {
-        clearInterval(timerInterval);
-        timerInterval = null;
+function pararTemporizador() {
+    if (intervaloTemporizador !== null) {
+        clearInterval(intervaloTemporizador);
+        intervaloTemporizador = null;
     }
 }
 
 document.addEventListener('keydown', function (e) {
-    if (isSolving) return;
+    if (resolvendo) return;
     switch (e.key) {
-        case 'ArrowUp': case 'w': case 'W': movePlayer('up'); break;
-        case 'ArrowDown': case 's': case 'S': movePlayer('down'); break;
-        case 'ArrowLeft': case 'a': case 'A': movePlayer('left'); break;
-        case 'ArrowRight': case 'd': case 'D': movePlayer('right'); break;
+        case 'ArrowUp': case 'w': case 'W': moverJogador('up'); break;
+        case 'ArrowDown': case 's': case 'S': moverJogador('down'); break;
+        case 'ArrowLeft': case 'a': case 'A': moverJogador('left'); break;
+        case 'ArrowRight': case 'd': case 'D': moverJogador('right'); break;
     }
 });
 
-// Garante que o labirinto seja gerado e renderizado assim que o DOM estiver carregado
 window.addEventListener('DOMContentLoaded', function() {
-    restartGame();
+    reiniciarJogo();
 });
