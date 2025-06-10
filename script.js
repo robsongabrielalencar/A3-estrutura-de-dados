@@ -65,8 +65,8 @@ function renderMaze() {
                 context.shadowColor = '#39FF14';
                 context.shadowBlur = 5;
             } else if (visitedByBot[i][j] === 'back') {
-                context.fillStyle = '#8A0303';
-                context.shadowColor = '#8A0303';
+                context.fillStyle = '#FFEF00';
+                context.shadowColor = '#FFEF00';
                 context.shadowBlur = 10;
             } else {
                 context.fillStyle = '#000000';
