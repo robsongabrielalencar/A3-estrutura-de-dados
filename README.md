@@ -24,6 +24,8 @@ O Maze Game permite que os usuários interajam com um labirinto, utilizando algo
 
 ## 🛠️ Como Executar Localmente
 
+Não é necessario instalar nenhuma dependência, basta clonar o projeto ou acessar o link do deploy, clicando em Acessar aplicação online
+
 1. Clone o repositório:
 
    ```bash
