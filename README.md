@@ -40,7 +40,7 @@ O Maze Game permite que os usuários interajam com um labirinto, utilizando algo
 
 ## 🛠️ Como Executar Localmente
 
-Não é necessario instalar nenhuma dependência, basta clonar o projeto ou acessar o link do deploy, clicando em Acessar aplicação online
+Para ter acesso ao projeto basta clonar o projeto ou acessar o link do deploy, clicando em acessar aplicação online
 
 🔗 **Acesse a aplicação online:** [https://a3-estrutura-de-dados.onrender.com](https://a3-estrutura-de-dados.onrender.com)
 
