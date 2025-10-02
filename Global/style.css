@@ -1,0 +1,383 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Press Start 2P', cursive;
+  text-align: center;
+  background-color: #000010;
+  color: #00ffea;
+  padding: 20px;
+}
+
+/* Título */
+h1 {
+  font-size: 24px;
+  color: #ff00cc;
+  text-shadow: 2px 2px #000;
+  margin-bottom: 10px;
+}
+
+/* Container do jogo */
+#game-container {
+  margin: 10px auto;
+  width: 480px;
+  height: 480px;
+  border: 4px solid #ff00cc;
+  background-color: #111;
+  box-shadow: 0 0 15px #ff00cc;
+}
+
+/* Canvas */
+canvas {
+  background-color: #111;
+  display: block;
+  margin: auto;
+  box-shadow: 0 0 10px #00ffea;
+}
+
+/* Informações */
+#info {
+  background-color: #1a0033;
+  color: #00ffea;
+  padding: 0px;
+  border: 2px solid #00ffea;
+  border-radius: 10px;
+  font-size: 10px;
+  width: 260px;
+  margin: 0px auto;
+  box-shadow: 0 0 10px #00ffea;
+  text-align: center;
+}
+
+#info p {
+  margin: 10px 0;
+}
+
+#info span {
+  font-weight: bold;
+  color: #ffff00;
+}
+
+/* Controles */
+.controls {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+/* Joystick */
+.joystick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 215px;
+  height: 215px;
+  justify-content: center;
+}
+
+.joystick .horizontal {
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  margin: 10px 0;
+}
+
+.arrow {
+  width: 45px;
+  height: 45px;
+  font-size: 20px;
+  background: linear-gradient(to bottom, #ff00cc, #660066);
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 10%;
+  cursor: pointer;
+  box-shadow: 0 0 8px #ff00cc;
+  transition: transform 0.2s ease;
+}
+
+.arrow:hover {
+  transform: scale(1.1);
+}
+
+/* Botões de ação */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.action-button {
+  padding: 12px 24px;
+  font-size: 12px;
+  border: 2px solid #fff;
+  border-radius: 20px;
+  font-weight: bold;
+  background: linear-gradient(to bottom, #00ffea, #005566);
+  color: black;
+  cursor: pointer;
+  box-shadow: 0 0 10px #00ffea;
+  transition: transform 0.2s;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.action-button:hover {
+  transform: scale(1.05);
+}
+
+/* Status */
+#status {
+  margin-top: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #00ff00;
+  text-shadow: 1px 1px #000;
+}
+
+/* Maze size */
+.maze-size {
+  margin-top: 10px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  background-color: #1a0033;
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-shadow: 0 0 6px #00ffea;
+  border: 2px solid #00ffea;
+}
+
+.maze-size label {
+  font-size: 10px;
+  color: #00ffea;
+  text-shadow: 1px 1px #000;
+}
+
+.maze-size input[type="number"] {
+  width: 60px;
+  padding: 4px;
+  font-size: 10px;
+  border: 2px solid #ff00cc;
+  border-radius: 4px;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.maze-size input[type="number"]:focus {
+  outline: none;
+  box-shadow: 0 0 5px #ff00cc;
+}
+
+.maze-size button {
+  padding: 6px 10px;
+  font-size: 10px;
+  font-weight: bold;
+  background-color: #ff00cc;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.maze-size button:hover {
+  background-color: #cc0099;
+}
+
+/* Responsivo */
+@media screen and (max-width: 768px) {
+  #info {
+    width: 90%;
+    margin: 20px auto;
+  }
+
+  #game-container {
+    width: 90%;
+    height: auto;
+  }
+
+  canvas {
+    width: 100%;
+    height: auto;
+  }
+
+  .controls {
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .joystick,
+  .actions {
+    flex: 1 1 0;
+    max-width: 50%;
+    padding: 10px;
+  }
+
+  .joystick {
+    width: auto;
+    height: auto;
+  }
+
+  .actions {
+    gap: 10px;
+  }
+
+  .action-button {
+    padding: 8px 12px;
+    font-size: 10px;
+  }
+
+  .arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+}
+
+/* Remove as setas do input number no Chrome, Safari, Edge */
+.maze-size input[type="number"]::-webkit-inner-spin-button,
+.maze-size input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  body {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  #info {
+    font-size: 8px;
+    width: 220px;
+    padding: 4px;
+  }
+
+  .maze-size {
+    transform: scale(0.85);
+    margin-top: 6px;
+  }
+
+  #main-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: nowrap;
+    margin-top: 10px;
+  }
+
+  #game-container {
+    width: 300px;
+    height: 300px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .controls {
+    flex-direction: column;
+    gap: 12px;
+    flex-shrink: 1;
+    max-width: 180px;
+  }
+
+  .joystick {
+    width: 100%;
+    height: auto;
+    padding: 0;
+    gap: 6px;
+  }
+
+  .joystick .horizontal {
+    gap: 10px;
+  }
+
+  .arrow {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  .actions {
+    gap: 10px;
+    align-items: center;
+  }
+
+  .action-button {
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+
+  #status {
+    font-size: 10px;
+    margin-top: 6px;
+  }
+}
+
+#victory-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 24px; 
+    color: #39b639; 
+    text-shadow: 0 0 10px #39b639, 0 0 20px #39b639, 0 0 30px #39b639, 0 0 40px #39b639;
+    background-color: rgba(0, 0, 0, 0.7); 
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000; 
+    display: none; 
+    text-align: center;
+    animation: fadeIn 2s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  #interaction-blocker {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0); /* invisível */
+  z-index: 9999;
+  display: none;
+  cursor: not-allowed;
+}
+
+  
